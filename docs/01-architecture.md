@@ -7,9 +7,9 @@
 - (Opzionale) Nginx: reverse proxy e TLS.
 
 ## Porte (stack di default)
-- OpenFGA HTTP: 8080
-- OpenFGA gRPC: 8081
-- Playground: 3000 (o 3001) (sconsigliato in produzione)
+- OpenFGA HTTP: 8080 (8081 su host)
+- OpenFGA gRPC: 8081 (8082 su host)
+- Playground: 3000 (3001 su host) (sconsigliato in produzione)
 - Metrics: 2112
 
 In questa repo, le porte sono mappate su 127.0.0.1 (solo locale).
