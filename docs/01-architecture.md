@@ -9,7 +9,7 @@
 ## Porte (stack di default)
 - OpenFGA HTTP: 8080
 - OpenFGA gRPC: 8081
-- Playground: 3000 (sconsigliato in produzione)
+- Playground: 3000 (o 3001) (sconsigliato in produzione)
 - Metrics: 2112
 
 In questa repo, le porte sono mappate su 127.0.0.1 (solo locale).
