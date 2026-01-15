@@ -1,0 +1,21 @@
+{
+  "writes": {
+    "tuple_keys": [
+      {
+        "user": "user:alice",
+        "relation": "reader",
+        "object": "document:doc1"
+      },
+      {
+        "user": "user:bob",
+        "relation": "writer",
+        "object": "document:doc1"
+      },
+      {
+        "user": "user:carol",
+        "relation": "owner",
+        "object": "document:doc1"
+      }
+    ]
+  }
+}

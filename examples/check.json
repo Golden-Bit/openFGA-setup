@@ -1,0 +1,7 @@
+{
+  "tuple_key": {
+    "user": "user:alice",
+    "relation": "reader",
+    "object": "document:doc1"
+  }
+}

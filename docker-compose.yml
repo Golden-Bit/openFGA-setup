@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: fga-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: postgres -c 'max_connections=100'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: openfga/openfga:${OPENFGA_VERSION}
+    container_name: fga-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=${OPENFGA_DATASTORE_ENGINE}
+      - OPENFGA_DATASTORE_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+    command: migrate
+    restart: "no"
+
+  openfga:
+    image: openfga/openfga:${OPENFGA_VERSION}
+    container_name: openfga
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    command: run
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=${OPENFGA_DATASTORE_ENGINE}
+      - OPENFGA_DATASTORE_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      - OPENFGA_AUTHN_METHOD=${OPENFGA_AUTHN_METHOD}
+      - OPENFGA_AUTHN_PRESHARED_KEYS=${OPENFGA_AUTHN_PRESHARED_KEYS}
+      - OPENFGA_PLAYGROUND_ENABLED=${OPENFGA_PLAYGROUND_ENABLED}
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:2112:2112"
+    healthcheck:
+      test: [ "CMD", "/usr/local/bin/grpc_health_probe", "-addr=openfga:8081" ]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+volumes:
+  postgres_data:
